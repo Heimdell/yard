@@ -91,3 +91,13 @@ oneOf = satisfy . flip Set.member . Set.fromList
 -}
 choose :: (Foldable f, Alternative t) => f (t a) -> t a
 choose = foldr (<|>) empty
+
+{- |
+  Equip some function with source location.
+
+  Is used to parse constructors:
+
+  `info Ctor <*> foo <* tok ":" <*> many bar`
+-}
+ctor :: (Point -> c) -> Parser c
+ctor = (<$> getPosition)
