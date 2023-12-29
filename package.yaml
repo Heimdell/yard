@@ -1,0 +1,23 @@
+name: yard
+
+dependencies:
+- base
+- containers
+- text
+
+default-extensions:
+- DisambiguateRecordFields
+- NoFieldSelectors
+- OverloadedRecordDot
+- DerivingStrategies
+- BlockArguments
+- LambdaCase
+- ImportQualifiedPost
+- NamedFieldPuns
+- DeriveFunctor
+- ScopedTypeVariables
+
+ghc-options: -freverse-errors -Wall -Werror
+
+library:
+  source-dirs: src
