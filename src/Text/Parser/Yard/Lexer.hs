@@ -63,8 +63,8 @@ charLiteral chars = do
   You can also specify character escapes, but only \\X-like constructs are supported
   at the moment.
 -}
-stringLiteral :: Map.Map Char Char -> String -> Parser String
-stringLiteral escape quote = do
+stringLiteral :: Map.Map Char Char -> String -> Parser Text.Text
+stringLiteral escape quote = Text.pack <$> do
   res <- many do
     notFollowedBy (string quote)
     charLiteral escape
