@@ -5,7 +5,7 @@
 module Text.Parser.Yard (module M) where
 
 import Control.Applicative          as M (some, many, optional, Alternative (..))
-import Control.Monad                as M (guard, when, unless)
+import Control.Monad                as M (guard, when, unless, void)
 import Text.Parser.Yard.Point       as M
 import Text.Parser.Yard.Core        as M
 import Text.Parser.Yard.Report      as M
