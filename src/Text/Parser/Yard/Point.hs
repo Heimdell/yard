@@ -18,7 +18,9 @@ data Point = Point
   , offset    :: Int        -- ^ offset from the start in what haskell calls `Char`
   , filename  :: String     -- ^ name of the file being parsed
   }
-  deriving stock (Show)
+
+instance Show Point where
+  show _ = "#"
 
 instance Eq  Point where (==)    = (==)    `on` (.offset)
 instance Ord Point where compare = compare `on` (.offset)
