@@ -14,7 +14,7 @@ import Text.Parser.Yard.Point
 {- |
   Most general way, you privde a parser, a filename (for report) and text to parse.
 -}
-parse :: Parser a -> String -> Text.Text -> Either Report a
+parse :: Parser a -> String -> Text.Text -> Either (Report ParseError) a
 parse p filename after = do
   let start = Point {after, before = [], col = 1, line = 1, filename, offset = 0}
   case p.runParser start of
@@ -33,7 +33,7 @@ parseTest p src = do
 {- |
   Read the file and parse it as whole.
 -}
-parseFile :: Show a => Parser a -> String -> IO (Either Report a)
+parseFile :: Show a => Parser a -> String -> IO (Either (Report ParseError) a)
 parseFile p filename = do
   src <- Text.readFile filename
   return (parse p filename src)

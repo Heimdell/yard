@@ -33,7 +33,23 @@ import Text.Parser.Yard.Point
 {- |
   Parse error is a set of names for things parser has expected.
 -}
-type ParseError = Set.Set String
+newtype ParseError = ParseError { _err :: Set.Set String }
+  deriving newtype (Semigroup, Monoid)
+
+{- |
+  Punctuate with commas and an "or" between last two items.
+-}
+listOf :: [String] -> String
+listOf [] = "unexpected"
+listOf (a' : xs') = "expected " <> listOf' a' xs'
+  where
+    listOf' :: String -> [String] -> String
+    listOf' a []       = a
+    listOf' a [b]      = a <> " or " <> b
+    listOf' a (b : xs) = a <> ", "   <> listOf' b xs
+
+instance Show ParseError where
+  show (ParseError errs) = listOf (Set.toList errs)
 
 {- |
   Parser is a state over position in file, it returns either an error or the result.
@@ -64,7 +80,7 @@ instance Monad Parser where
   Notice that `<|>` will only try right parser if the left one has consumed nothing!
 -}
 instance Alternative Parser where
-  empty = Parser \pos -> (pos, Left mempty)
+  empty = Parser \pos -> (pos, Left (ParseError mempty))
 
   la <|> ra = Parser \pos -> do
     case la.runParser pos of
@@ -82,7 +98,7 @@ instance Alternative Parser where
 -}
 complain :: [String] -> Parser a
 complain msgs = Parser \pos ->
-  (pos, Left (Set.fromList msgs))
+  (pos, Left (ParseError (Set.fromList msgs)))
 
 {- |
   Parse one char that passes the check.
@@ -102,7 +118,7 @@ satisfy good = Parser \pos ->
 eof :: Parser ()
 eof = Parser \pos ->
   case nextChar pos of
-    Just _ -> (pos, Left  (Set.singleton "end-of-file"))
+    Just _ -> (pos, Left  (ParseError (Set.singleton "end-of-file")))
     _      -> (pos, Right ())
 
 {- |
@@ -131,7 +147,7 @@ try p = Parser \pos -> do
 (<?>) :: String -> Parser a -> Parser a
 msg <?> p = Parser \pos ->
   case p.runParser pos of
-    (pos', Left _) | pos == pos' -> (pos', Left (Set.singleton msg))
+    (pos', Left _) | pos == pos' -> (pos', Left (ParseError (Set.singleton msg)))
     res                          -> res
 
 {- |

@@ -16,6 +16,7 @@ default-extensions:
 - NamedFieldPuns
 - DeriveFunctor
 - ScopedTypeVariables
+- GeneralizedNewtypeDeriving
 
 ghc-options: -freverse-errors -Wall -Werror
 
